@@ -23,7 +23,7 @@
 
 - _To fetch list of posts - `GET /api/posts/`._
 - _To fetch list of comments - `GET /api/posts/{post_id}/comments/`._
-- _Subscribtion to certain user - `POST /api/follow/` <sub>with body</sub> `{"following": "username"}`._
+- _Subscribtion to certain user - `POST /api/follow/` <ins>with body</ins> `{"following": "username"}`._
 
 
 
