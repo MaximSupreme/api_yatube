@@ -13,7 +13,10 @@
 
 **To deploy this project on your computer:**
 - _Clone this repository to your ***working directory***._
-- _Install requirements via - `pip install -r requirements.txt`._
+- Install requirements via -
+```bash
+pip install -r requirements.txt
+```
 - _Apply migrations via - `python(3) manage.py migrate`._
 - _Run server via - `python(3) manage.py runserver`._
 
