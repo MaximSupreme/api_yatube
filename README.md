@@ -30,9 +30,12 @@ python(3) manage.py runserver
 
 ## API request examples:
 
-- _To fetch list of posts - `GET /api/posts/`._
-- _To fetch list of comments - `GET /api/posts/{post_id}/comments/`._
-- _Subscribtion to certain user - `POST /api/follow/` with body `{"following": "username"}`._
+- _To fetch list of posts - `GET /api/v1/posts/`._
+- _To fetch list of comments - `GET /api//v1/posts/{post_id}/comments/`._
+- _To fetch list of all groups - `GET /api/v1/groups/`._
+- _To fetch, (put, patch, delete) certain post - `GET /api/v1/posts/{post_id}/`._
+- _To fetch (put, patch, delete) certain comment - `GET /api/vi/posts/{post_id}/comments/{comment_id}/`._
+- _To fetch (put, patch, delete) certain group - `GET /api/v1/groups/{group_id}/`._
 
 
 
