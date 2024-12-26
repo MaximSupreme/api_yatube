@@ -1,60 +1,43 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
+from rest_framework import permissions
 
 from posts.models import Post, Group, Comment
-from .serializers import PostSerializer, GroupSerializer, CommentSerializer, GroupListSerializer
+from .serializers import PostSerializer, GroupSerializer, CommentSerializer
 
 
-# @api_view(['GET', 'POST'])
-# def post_list(request):
-#     if request.method == 'POST':
-#         serializer = PostSerializer(data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#     posts = Post.objects.all()
-#     serializer = PostSerializer(posts, many=True)
-#     return Response(serializer.data)
-
-# class PostList(generics.ListCreateAPIView):
-#     queryset = Post.objects.all()
-#     serializer_class = PostSerializer
-
-
-# class PostDetail(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = Post.objects.all()
-#     serializer_class = PostSerializer
-
-
-# class GroupList(generics.ListAPIView):
-#     queryset = Group.objects.all()
-#     serializer_class = GroupSerializer
-
-
-# class GroupDetail(generics.RetrieveAPIView):
-#     queryset = Group.objects.all()
-#     serializer_class = GroupSerializer
+class IsAuthor(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        else:
+            return obj.author == request.user
 
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated, IsAuthor]
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
 
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
-    def get_serializer_class(self):
-        if self.action == 'list':
-            return GroupListSerializer
-        return GroupSerializer
-
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticated, IsAuthor]
+
+    def get_post(self):
+        return get_object_or_404(Post, id=self.kwargs.get('post_id'))
 
     def get_queryset(self):
-        post_id = self.kwargs.get('post_id')
-        new_queryset = Comment.objects.filter(post=post_id)
+        new_queryset = Comment.objects.filter(post=self.get_post()).all()
         return new_queryset
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user, post=get_object_or_404(Post, id=self.get_post()))
