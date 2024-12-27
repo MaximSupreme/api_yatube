@@ -40,4 +40,4 @@ class CommentViewSet(viewsets.ModelViewSet):
         return new_queryset
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user, post=get_object_or_404(Post, id=self.get_post()))
+        serializer.save(author=self.request.user, post=self.get_post())

@@ -26,7 +26,6 @@ class GroupSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    # post = serializers.ReadOnlyField(source='post.id')
     post = serializers.ReadOnlyField(source='post.id')
     author = serializers.ReadOnlyField(source='author.username')
 
