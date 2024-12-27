@@ -11,7 +11,10 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ('id', 'text', 'author', 'image', 'group', 'pub_date', 'comments')
+        fields = (
+            'id', 'text', 'author', 'image',
+            'group', 'pub_date', 'comments'
+        )
     
     def create(self, validated_data):
         if 'image' or 'group' not in self.initial_data:
