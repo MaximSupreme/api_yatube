@@ -15,7 +15,7 @@ class PostSerializer(serializers.ModelSerializer):
             'id', 'text', 'author', 'image',
             'group', 'pub_date', 'comments'
         )
-    
+
     def create(self, validated_data):
         if 'image' or 'group' not in self.initial_data:
             post = Post.objects.create(**validated_data)
