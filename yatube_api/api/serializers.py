@@ -5,9 +5,10 @@ from posts.models import Group, Post, Comment
 
 class PostSerializer(serializers.ModelSerializer):
     group = serializers.StringRelatedField(read_only=True, required=False)
-    image = serializers.ImageField(read_only=True, required=False)
-    comments = serializers.StringRelatedField(many=True, read_only=True)
-    author = serializers.ReadOnlyField(source='author.username')
+    author = serializers.SlugRelatedField(
+        slug_field='username',
+        read_only=True,
+    )
 
     class Meta:
         model = Post
@@ -15,11 +16,6 @@ class PostSerializer(serializers.ModelSerializer):
             'id', 'text', 'author', 'image',
             'group', 'pub_date', 'comments'
         )
-
-    def create(self, validated_data):
-        if 'image' or 'group' not in self.initial_data:
-            post = Post.objects.create(**validated_data)
-            return post
 
 
 class GroupSerializer(serializers.ModelSerializer):
@@ -29,8 +25,14 @@ class GroupSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    post = serializers.ReadOnlyField(source='post.id')
-    author = serializers.ReadOnlyField(source='author.username')
+    post = serializers.SlugRelatedField(
+        slug_field='id',
+        read_only=True,
+    )
+    author = serializers.SlugRelatedField(
+        slug_field='username',
+        read_only=True,
+    )
 
     class Meta:
         model = Comment

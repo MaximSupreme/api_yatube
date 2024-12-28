@@ -3,15 +3,8 @@ from rest_framework import viewsets
 from rest_framework import permissions
 
 from posts.models import Post, Group, Comment
+from .permissions import IsAuthor
 from .serializers import PostSerializer, GroupSerializer, CommentSerializer
-
-
-class IsAuthor(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        else:
-            return obj.author == request.user
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -36,8 +29,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         return get_object_or_404(Post, id=self.kwargs.get('post_id'))
 
     def get_queryset(self):
-        new_queryset = Comment.objects.filter(post=self.get_post()).all()
-        return new_queryset
+        return Comment.objects.filter(post=self.get_post())
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user, post=self.get_post())
